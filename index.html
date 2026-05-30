@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>職涯象限自評表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F4EF;
+  --surface: #FFFFFF;
+  --ink: #1C1A17;
+  --ink2: #6B6760;
+  --ink3: #A8A49E;
+  --accent: #3D5A80;
+  --accent2: #E07A5F;
+  --border: rgba(28,26,23,0.1);
+  --purple: #6B5B95;
+  --teal: #2A9D8F;
+  --amber: #E9C46A;
+  --blue: #3D5A80;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans TC', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.header-eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 0.75rem;
+}
+.header h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+.header p {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+
+/* Progress */
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 2rem;
+}
+.progress-track {
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 1px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.progress-text {
+  font-size: 12px;
+  color: var(--ink3);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+}
+
+/* Step */
+.step { display: none; }
+.step.active { display: block; animation: fadeUp 0.35s ease; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.stage-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.q-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 10px; }
+
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  background: var(--bg);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.opt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.opt:hover { border-color: rgba(61,90,128,0.3); transform: translateX(3px); }
+.opt:hover::before { opacity: 0.03; }
+
+.opt.selected {
+  border-color: var(--accent);
+  background: rgba(61,90,128,0.05);
+  transform: translateX(3px);
+}
+.opt.selected .opt-key {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.opt.selected .opt-label { color: var(--accent); font-weight: 500; }
+
+.opt-key {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 500;
+  color: var(--ink3);
+  flex-shrink: 0;
+  transition: all 0.2s;
+  background: var(--surface);
+  position: relative;
+}
+
+.opt-label {
+  font-size: 15px;
+  color: var(--ink);
+  line-height: 1.5;
+  position: relative;
+}
+
+/* Nav */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: 'Noto Sans TC', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink2);
+}
+.btn:hover { background: var(--bg); color: var(--ink); }
+.btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  font-weight: 500;
+}
+.btn-primary:hover { background: #2e4460; border-color: #2e4460; }
+.btn-primary:disabled { background: var(--ink3); border-color: var(--ink3); }
+
+/* Arrow SVG */
+.arrow { width: 16px; height: 16px; }
+
+/* Result */
+.result-wrap { display: none; animation: fadeUp 0.4s ease; }
+
+.quadrant-section { margin-bottom: 1.5rem; }
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.axis-top, .axis-bottom {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  padding: 6px 0;
+}
+
+.chart-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.axis-side {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink3);
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  padding: 4px 0;
+  white-space: nowrap;
+}
+.axis-side-right { transform: none; }
+
+svg.quad { width: 100%; height: auto; display: block; border-radius: 12px; overflow: hidden; }
+
+.result-type {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.type-tag {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+.type-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 0.75rem;
+}
+.type-desc {
+  font-size: 14px;
+  color: var(--ink2);
+  line-height: 1.8;
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1.5rem 0;
+}
+
+.section-title {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 1rem;
+}
+
+.job-pills {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 1.5rem;
+}
+.pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  color: var(--ink2);
+  background: var(--bg);
+}
+
+.actions { display: flex; flex-direction: column; gap: 10px; }
+.action-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg);
+  border-radius: 10px;
+}
+.action-num {
+  width: 22px; height: 22px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.action-text { font-size: 14px; color: var(--ink); line-height: 1.7; }
+
+.result-nav {
+  display: flex;
+  gap: 10px;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.result-nav .btn { flex: 1; justify-content: center; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 12px;
+  color: var(--ink3);
+}
+
+@media (max-width: 480px) {
+  .card { padding: 1.5rem; }
+  .q-title { font-size: 18px; }
+  .header h1 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <div class="header-eyebrow">職涯定位工具</div>
+    <h1>你適合哪種職涯路徑？</h1>
+    <p>四個階段，找到屬於你的象限</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+    <div class="progress-text" id="counter">1 / 4</div>
+  </div>
+
+  <div class="card">
+
+    <!-- Steps -->
+    <div class="step active" id="s0">
+      <div class="stage-badge"><div class="stage-dot"></div>階段一</div>
+      <div class="q-title">你是哪一種人？</div>
+      <div class="options">
+        <div class="opt" onclick="pick(0,'A',this)"><div class="opt-key">A</div><div class="opt-label">不自律而且一切考砸</div></div>
+        <div class="opt" onclick="pick(0,'B',this)"><div class="opt-key">B</div><div class="opt-label">不善於讀書但很自律</div></div>
+        <div class="opt" onclick="pick(0,'C',this)"><div class="opt-key">C</div><div class="opt-label">善於讀書與自律型</div></div>
+        <div class="opt" onclick="pick(0,'D',this)"><div class="opt-key">D</div><div class="opt-label">不自律但只要東西有趣就能考好</div></div>
+      </div>
+    </div>
+
+    <div class="step" id="s1">
+      <div class="stage-badge"><div class="stage-dot"></div>階段二</div>
+      <div class="q-title">你懷疑自己有哪種特質？</div>
+      <div class="options">
+        <div class="opt" onclick="pick(1,'A',this)"><div class="opt-key">A</div><div class="opt-label">我懷疑我有高敏感</div></div>
+        <div class="opt" onclick="pick(1,'B',this)"><div class="opt-key">B</div><div class="opt-label">我懷疑我有 ADD</div></div>
+        <div class="opt" onclick="pick(1,'C',this)"><div class="opt-key">C</div><div class="opt-label">我懷疑我有 ASD</div></div>
+        <div class="opt" onclick="pick(1,'D',this)"><div class="opt-key">D</div><div class="opt-label">我懷疑我有 AuDHD</div></div>
+      </div>
+    </div>
+
+    <div class="step" id="s2">
+      <div class="stage-badge"><div class="stage-dot"></div>階段三</div>
+      <div class="q-title">哪一個最符合你的狀態？</div>
+      <div class="options">
+        <div class="opt" onclick="pick(2,'A',this)"><div class="opt-key">A</div><div class="opt-label">我對聲音容忍度很低</div></div>
+        <div class="opt" onclick="pick(2,'B',this)"><div class="opt-key">B</div><div class="opt-label">我很容易衝動</div></div>
+        <div class="opt" onclick="pick(2,'C',this)"><div class="opt-key">C</div><div class="opt-label">我有道德潔癖，完全無法割韭菜</div></div>
+        <div class="opt" onclick="pick(2,'D',this)"><div class="opt-key">D</div><div class="opt-label">我沒有衝動，但我常常逼自己要拼一點</div></div>
+      </div>
+    </div>
+
+    <div class="step" id="s3">
+      <div class="stage-badge"><div class="stage-dot"></div>階段四</div>
+      <div class="q-title">別人怎麼看你？</div>
+      <div class="options">
+        <div class="opt" onclick="pick(3,'A',this)"><div class="opt-key">A</div><div class="opt-label">我經常感受到惡意</div></div>
+        <div class="opt" onclick="pick(3,'B',this)"><div class="opt-key">B</div><div class="opt-label">我經常無意傷到別人</div></div>
+        <div class="opt" onclick="pick(3,'C',this)"><div class="opt-key">C</div><div class="opt-label">我經常被說頑固</div></div>
+        <div class="opt" onclick="pick(3,'D',this)"><div class="opt-key">D</div><div class="opt-label">我經常被說矛盾、摸不透</div></div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-wrap" id="result">
+      <div class="quadrant-section">
+        <div class="chart-container">
+          <div class="axis-top">白領 / 考試型</div>
+          <div class="chart-row">
+            <div class="axis-side">業務 / 人際</div>
+            <svg class="quad" id="quad-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+              <!-- quadrant backgrounds -->
+              <rect x="0" y="0" width="148" height="148" fill="#EEF2F8" rx="0"/>
+              <rect x="152" y="0" width="148" height="148" fill="#E8F5F1" rx="0"/>
+              <rect x="0" y="152" width="148" height="148" fill="#FEF6EA" rx="0"/>
+              <rect x="152" y="152" width="148" height="148" fill="#EAF2FB" rx="0"/>
+              <!-- quadrant labels -->
+              <text x="74" y="26" text-anchor="middle" font-size="10" fill="#5B7AAD" font-family="Noto Sans TC,sans-serif">業務白領</text>
+              <text x="226" y="26" text-anchor="middle" font-size="10" fill="#2A9D8F" font-family="Noto Sans TC,sans-serif">白領技術</text>
+              <text x="74" y="288" text-anchor="middle" font-size="10" fill="#C4824A" font-family="Noto Sans TC,sans-serif">服務業務</text>
+              <text x="226" y="288" text-anchor="middle" font-size="10" fill="#3D5A80" font-family="Noto Sans TC,sans-serif">藍領技術</text>
+              <!-- axes -->
+              <line x1="150" y1="8" x2="150" y2="292" stroke="rgba(28,26,23,0.15)" stroke-width="1"/>
+              <line x1="8" y1="150" x2="292" y2="150" stroke="rgba(28,26,23,0.15)" stroke-width="1"/>
+              <!-- dot placeholder -->
+              <circle id="dot-glow" cx="150" cy="150" r="18" fill="#3D5A80" opacity="0.12"/>
+              <circle id="dot" cx="150" cy="150" r="7" fill="#3D5A80"/>
+            </svg>
+            <div class="axis-side axis-side-right">技術 / 專業</div>
+          </div>
+          <div class="axis-bottom">藍領 / 服務業</div>
+        </div>
+      </div>
+
+      <div class="result-type">
+        <div class="type-tag" id="res-tag"></div>
+        <div class="type-title" id="res-title"></div>
+        <div class="type-desc" id="res-desc"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="section-title">適合方向</div>
+      <div class="job-pills" id="res-jobs"></div>
+
+      <div class="section-title">你的下一步</div>
+      <div class="actions" id="res-actions"></div>
+
+      <div class="result-nav">
+        <button class="btn" onclick="restart()">↺ 重新測驗</button>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <div class="nav" id="nav">
+      <button class="btn" id="btn-prev" onclick="prev()" disabled>
+        <svg class="arrow" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        上一題
+      </button>
+      <button class="btn btn-primary" id="btn-next" onclick="next()" disabled>
+        下一題
+        <svg class="arrow" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <div class="footer">四個選擇，找到你的起點</div>
+</div>
+
+<script>
+const scoring={
+  0:{A:[-1,-1],B:[0,-1],C:[1,1],D:[-1,1]},
+  1:{A:[-1,0],B:[-1,1],C:[1,0],D:[0,0]},
+  2:{A:[1,0],B:[-1,0],C:[1,1],D:[0,1]},
+  3:{A:[0,-1],B:[-1,-1],C:[1,0],D:[-1,1]}
+};
+
+const quadrants={
+  TL:{name:'業務白領型',tag:'策略人際',tagBg:'#EEF2F8',tagColor:'#3D5A80',dotColor:'#3D5A80',
+    desc:'你擅長在人際關係中找到機會，同時具備一定的思考架構。比起執行，你更適合做決策與說服。在業務開發、行銷企劃、公關領域往往能快速發光。',
+    jobs:['業務開發','行銷企劃','公關媒體','品牌經理','教育訓練'],
+    actions:['整理你過去說服別人或解決衝突的故事，這是你最強的面試武器','找一個業務或行銷相關的兼職或副業先試水溫','學習基礎數據分析，讓你的人際優勢更有說服力']},
+  TR:{name:'白領技術型',tag:'專業知識',tagBg:'#E8F5F1',tagColor:'#1B6B63',dotColor:'#2A9D8F',
+    desc:'你傾向獨立作業、邏輯清晰，適合需要深度專業的領域。考試型學習對你有效，在技術、法律、財務、研究等領域最如魚得水。',
+    jobs:['工程師','會計師','律師','資料分析師','研究員','UX設計師'],
+    actions:['選定一個感興趣的技術領域，開始系統性學習（課程或證照）','建立作品集或學習記錄，這比學歷更能證明你的能力','找到你的「深度興趣」，技術人最怕興趣不穩定']},
+  BL:{name:'服務業務型',tag:'實戰人際',tagBg:'#FEF6EA',tagColor:'#9A5C2A',dotColor:'#E07A5F',
+    desc:'你在實際接觸人的環境中最有能量，不擅長長時間坐辦公室，但面對客戶時反應快、同理心強。門市、直播、現場活動等都是你的舞台。',
+    jobs:['門市店長','服務業主管','直播主','活動統籌','業務代表','美容師'],
+    actions:['在現有工作中主動爭取帶人或帶流程的機會','記錄每次讓客戶滿意的案例，建立你的口碑資產','考慮創業或接案，你的特質在自由工作者中很吃香']},
+  BR:{name:'藍領技術型',tag:'專業實作',tagBg:'#EAF2FB',tagColor:'#2A4A6B',dotColor:'#3D5A80',
+    desc:'你喜歡動手解決問題，有明確步驟和結果才有成就感。不擅長應酬或模糊目標，但在需要精準執行的技術工作中，你會比別人更穩定可靠。',
+    jobs:['技術工程師','廚師','攝影師','工業設計','汽車維修','網路技術'],
+    actions:['找一個可以考證照的技術方向，給自己的能力貼上標籤','尋找師徒制或學徒機會，實作學習對你最有效','不要低估藍領技術的收入天花板，頂尖技師往往比白領高薪']}
+};
+
+let cur=0, ans={};
+
+function pick(qi, val, el){
+  ans[qi]=val;
+  document.querySelectorAll('#s'+qi+' .opt').forEach(e=>e.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('btn-next').disabled=false;
+}
+
+function next(){
+  if(cur<3){ cur++; showStep(); }
+  else showResult();
+}
+
+function prev(){
+  if(cur>0){ cur--; showStep(); }
+}
+
+function showStep(){
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s'+cur).classList.add('active');
+  document.getElementById('prog').style.width=((cur+1)/5*100)+'%';
+  document.getElementById('counter').textContent=(cur+1)+' / 4';
+  document.getElementById('btn-prev').disabled=cur===0;
+  document.getElementById('btn-next').disabled=ans[cur]===undefined;
+}
+
+function showResult(){
+  let x=0, y=0;
+  [0,1,2,3].forEach(i=>{
+    const v=ans[i];
+    if(v && scoring[i][v]){ x+=scoring[i][v][0]; y+=scoring[i][v][1]; }
+  });
+
+  const quadKey=(y>=0?'T':'B')+(x>=0?'R':'L');
+  const q=quadrants[quadKey];
+
+  document.querySelectorAll('.step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('nav').style.display='none';
+  document.getElementById('result').style.display='block';
+  document.getElementById('prog').style.width='100%';
+  document.getElementById('counter').textContent='完成';
+
+  // position dot
+  const nx=Math.max(-0.9,Math.min(0.9,x/4));
+  const ny=Math.max(-0.9,Math.min(0.9,y/4));
+  const px=150+nx*120;
+  const py=150-ny*120;
+  document.getElementById('dot').setAttribute('cx',px);
+  document.getElementById('dot').setAttribute('cy',py);
+  document.getElementById('dot').setAttribute('fill',q.dotColor);
+  document.getElementById('dot-glow').setAttribute('cx',px);
+  document.getElementById('dot-glow').setAttribute('cy',py);
+  document.getElementById('dot-glow').setAttribute('fill',q.dotColor);
+
+  document.getElementById('res-tag').textContent=q.tag;
+  document.getElementById('res-tag').style.cssText=`background:${q.tagBg};color:${q.tagColor};display:inline-block;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:500;letter-spacing:0.05em;margin-bottom:0.75rem`;
+  document.getElementById('res-title').textContent=q.name;
+  document.getElementById('res-desc').textContent=q.desc;
+  document.getElementById('res-jobs').innerHTML=q.jobs.map(j=>`<span class="pill">${j}</span>`).join('');
+  document.getElementById('res-actions').innerHTML=q.actions.map((a,i)=>`<div class="action-item"><div class="action-num">${i+1}</div><div class="action-text">${a}</div></div>`).join('');
+}
+
+function restart(){
+  ans={}; cur=0;
+  document.getElementById('result').style.display='none';
+  document.getElementById('nav').style.display='flex';
+  document.querySelectorAll('.opt').forEach(e=>e.classList.remove('selected'));
+  showStep();
+  document.getElementById('btn-next').disabled=true;
+}
+</script>
+</body>
+</html>
